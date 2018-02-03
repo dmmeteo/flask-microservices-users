@@ -1,6 +1,15 @@
 version: '3.4'
 
 services:
+  users-db:
+    container_name: users-db
+    build: ./project/db
+    ports:
+      - 5435:5432 # HOST:CONTAINER
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+
   users-service:
     container_name: users-service
     build: .
@@ -10,3 +19,12 @@ services:
       - 5001:5000 # HOST:CONTAINER
     environment:
       - APP_SETTINGS=project.config.DevelopmentConfig
+      - DATABASE_URL=postgres://postgres:postgres@users-db:5432/users_dev
+      - DATABASE_TEST_URL=postgres://postgres:postgres@users-db:5432/users_test
+    depends_on:
+      - users-db
+    links:
+      - users-db
+
+
+
