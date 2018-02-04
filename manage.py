@@ -1,9 +1,11 @@
 import unittest
 from flask_script import Manager
 
-from project import app, db
+from project import create_app, db
+from project.api.models import User
 
 
+app = create_app()
 manager = Manager(app)
 
 
@@ -13,6 +15,7 @@ def recreate_db():
     db.drop_all()
     db.create_all()
     db.session.commit()
+
 
 @manager.command
 def test():
