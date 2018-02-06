@@ -5,6 +5,13 @@ from project.tests.base import BaseTestCase
 from project.api.models import User
 
 
+def add_user(username, email):
+    user = User(username=username, email=email)
+    db.session.add(user)
+    db.session.commit()
+    return user
+
+
 
 class TestUserServise(BaseTestCase):
     """Test for the Users Servise"""
@@ -87,7 +94,7 @@ class TestUserServise(BaseTestCase):
 
     def test_single_user(self):
         """Ensure get single user behaves correctly"""
-        user = User(username='boba', email='boba@realpython.com')
+        user = add_user('boba', 'boba@realpython.com')
         db.session.add(user)
         db.session.commit()
         with self.client:
@@ -116,7 +123,23 @@ class TestUserServise(BaseTestCase):
             self.assertEqual(response.status_code, 404)
             self.assertIn('User does not exist', data['message'])
             self.assertIn('fail', data['status'])
- 
+
+    def test_all_users(self):
+        """Ensure get all users behaves correctly"""
+        add_user('boba', 'boba@realpython.com')
+        add_user('biba', 'biba@realpython.com')
+        with self.client:
+            response = self.client.get('/users')
+            data = json.loads(response.data.decode())
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(len(data['data']['users']), 2)
+            self.assertTrue('created_at' in data['data']['users'][0])
+            self.assertTrue('created_at' in data['data']['users'][1])
+            self.assertIn('boba', data['data']['users'][0]['username'])
+            self.assertIn('biba', data['data']['users'][1]['username'])
+            self.assertIn('boba@realpython.com', data['data']['users'][0]['email'])
+            self.assertIn('biba@realpython.com', data['data']['users'][1]['email'])
+            self.assertIn('success', data['status'])
 
 
 
