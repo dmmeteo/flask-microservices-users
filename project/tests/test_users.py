@@ -141,6 +141,35 @@ class TestUserServise(BaseTestCase):
             self.assertIn('biba@realpython.com', data['data']['users'][1]['email'])
             self.assertIn('success', data['status'])
 
+    def test_main_on_users(self):
+        """Ensure the main route behaves correctly when no users 
+        have been added to the database"""
+        add_user('boba', 'boba@realpython.com')
+        add_user('biba', 'biba@realpython.com')
+        response = self.client.get('/')
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b'<h1>All Users</h1>', response.data)
+        self.assertNotIn(b'<p>No users!</p>', response.data)
+        self.assertIn(b'<strong>boba</strong>', response.data)
+        self.assertIn(b'<strong>biba</strong>', response.data)
+
+    def test_main_add_user(self):
+        """Ensure a new user can be added to the database"""
+        with self.client:
+            response = self.client.post(
+                '/',
+                data=dict(username='boba', email='boba@realpython.com'),
+                follow_redirects=True
+            )
+            self.assertEqual(response.status_code, 200)
+            self.assertIn(b'<h1>All Users</h1>', response.data)
+            self.assertNotIn(b'<p>No users!</p>', response.data)
+            self.assertIn(b'<strong>boba</strong>', response.data)
+
+
+
+
+
 
 
 
