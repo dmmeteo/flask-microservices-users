@@ -12,6 +12,7 @@ users_blueprint = Blueprint('users', __name__, template_folder='./templates')
 
 @users_blueprint.route('/', methods=['GET', 'POST'])
 def index():
+    # TODO normal data validation
     if request.method == 'POST':
         username = request.form['username']
         email = request.form['email']
@@ -92,6 +93,7 @@ def get_single_user(user_id):
 
 @users_blueprint.route('/users', methods=['GET'])
 def get_all_users():
+    # TODO normal response if database is not exist
     users = User.query.all()
     users_list = []
     for user in users:
