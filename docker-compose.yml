@@ -10,8 +10,8 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
 
-  users-service:
-    container_name: users-service
+  users:
+    container_name: users
     build: .
     volumes:
       - .:/usr/src/app

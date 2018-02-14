@@ -5,14 +5,17 @@ RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 
 # add requirements (to leverage Docker cache)
-ADD ./requirements.txt /usr/src/app/requirements.txt
+COPY ./requirements.txt /usr/src/app/requirements.txt
 
 # install requirements
 RUN pip install -r requirements.txt
 
+# add entrypoint.sh
+COPY ./entrypoint.sh /usr/src/app/entrypoint.sh
+
 # add app
-ADD . /usr/src/app
+COPY . /usr/src/app
 
-CMD python manage.py runserver -h 0.0.0.0
-
+# run server
+CMD ["./entrypoint.sh"]
 
