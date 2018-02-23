@@ -2,9 +2,9 @@ FROM python:3
 
 # install environment dependencies
 RUN apt-get update -yqq \
-  && apt-get install -yqq --no-install-recommends \
+    && apt-get install -yqq --no-install-recommends \
     netcat \
-  && apt-get -q clean
+    && apt-get -q clean
 
 # set working directory
 RUN mkdir -p /usr/src/app
