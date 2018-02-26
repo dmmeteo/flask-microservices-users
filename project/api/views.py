@@ -82,8 +82,7 @@ def get_single_user(user_id):
 @users_blueprint.route('/users', methods=['GET'])
 def get_all_users():
     """Get all users"""
-    # TODO normal response if database is not exist
-    users = User.query.all()
+    users = User.query.order_by(User.created_at.desc()).all()
     users_list = []
     for user in users:
         users_list.append({
