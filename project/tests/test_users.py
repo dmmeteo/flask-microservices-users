@@ -137,10 +137,10 @@ class TestUserServise(BaseTestCase):
             self.assertEqual(len(data['data']['users']), 2)
             self.assertTrue('created_at' in data['data']['users'][0])
             self.assertTrue('created_at' in data['data']['users'][1])
-            self.assertIn('boba', data['data']['users'][0]['username'])
-            self.assertIn('biba', data['data']['users'][1]['username'])
-            self.assertIn('boba@realpython.com', data['data']['users'][0]['email'])
-            self.assertIn('biba@realpython.com', data['data']['users'][1]['email'])
+            self.assertIn('boba', data['data']['users'][1]['username'])
+            self.assertIn('biba', data['data']['users'][0]['username'])
+            self.assertIn('boba@realpython.com', data['data']['users'][1]['email'])
+            self.assertIn('biba@realpython.com', data['data']['users'][0]['email'])
             self.assertIn('success', data['status'])
 
 
