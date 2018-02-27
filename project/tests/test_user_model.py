@@ -17,6 +17,3 @@ class TestUserModel(BaseTestCase):
         self.assertEqual(user.username, 'justatest')
         self.assertEqual(user.email, 'test@test.com')
 
-
-
-
