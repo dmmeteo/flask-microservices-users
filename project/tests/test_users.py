@@ -1,17 +1,10 @@
 import json
+import datetime
 
 from project import db
 from project.tests.base import BaseTestCase
 from project.api.models import User
-import datetime
-
-
-def add_user(username, email, created_at=datetime.datetime.utcnow()):
-    user = User(username=username, email=email, created_at=created_at)
-    db.session.add(user)
-    db.session.commit()
-    return user
-
+from project.tests.utils import add_user
 
 
 class TestUserServise(BaseTestCase):
