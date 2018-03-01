@@ -88,7 +88,7 @@ class TestUserServise(BaseTestCase):
 
     def test_single_user(self):
         """Ensure get single user behaves correctly"""
-        user = add_user('boba', 'boba@realpython.com')
+        user = add_user('boba', 'boba@realpython.com', 'password')
         db.session.add(user)
         db.session.commit()
         with self.client:
@@ -121,8 +121,8 @@ class TestUserServise(BaseTestCase):
     def test_all_users(self):
         """Ensure get all users behaves correctly"""
         created = datetime.datetime.utcnow() + datetime.timedelta(-30)
-        add_user('boba', 'boba@realpython.com', created)
-        add_user('biba', 'biba@realpython.com')
+        add_user('boba', 'boba@realpython.com', 'password' created)
+        add_user('biba', 'biba@realpython.com', 'password')
         with self.client:
             response = self.client.get('/users')
             data = json.loads(response.data.decode())

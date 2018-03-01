@@ -50,3 +50,16 @@ class TestUserModel(BaseTestCase):
         )
         db.session.add(duplicate_user)
         self.assertRaises(IntegrityError, db.session.commit)
+
+    """Ensure that passwoerds are random"""
+    def test_passwords_are_random(self):
+        user_one = add_user('justatest', 'test@test.com', 'test')
+        user_two = add_user('justatest2', 'test2@test.com', 'test')
+        self.assertNotEqual(user_one.passwoerd, user_two.passwoerd)
+
+
+
+
+
+
+
