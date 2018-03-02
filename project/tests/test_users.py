@@ -25,7 +25,8 @@ class TestUserServise(BaseTestCase):
                 '/users',
                 data=json.dumps({
                     'username': 'boba',
-                    'email': 'boba@realpython.com'
+                    'email': 'boba@realpython.com',
+                    'password': 'test'
                 }),
                 content_type='application/json',
             )
@@ -69,7 +70,8 @@ class TestUserServise(BaseTestCase):
                 '/users',
                 data=json.dumps({
                     'username': 'boba',
-                    'email': 'boba@realpython.com'
+                    'email': 'boba@realpython.com',
+                    'password': 'test'
                 }),
                 content_type='application/json'
             )
@@ -121,7 +123,7 @@ class TestUserServise(BaseTestCase):
     def test_all_users(self):
         """Ensure get all users behaves correctly"""
         created = datetime.datetime.utcnow() + datetime.timedelta(-30)
-        add_user('boba', 'boba@realpython.com', 'password' created)
+        add_user('boba', 'boba@realpython.com', 'password', created)
         add_user('biba', 'biba@realpython.com', 'password')
         with self.client:
             response = self.client.get('/users')
@@ -135,6 +137,24 @@ class TestUserServise(BaseTestCase):
             self.assertIn('boba@realpython.com', data['data']['users'][1]['email'])
             self.assertIn('biba@realpython.com', data['data']['users'][0]['email'])
             self.assertIn('success', data['status'])
+
+    def test_add_user_invalid_json_keys_no_password(self):
+        """Ensure error is thrown if the JSON object does not have a password key"""
+        with self.client:
+            response = self.client.post(
+                '/users',
+                data=json.dumps({
+                    'username': 'boba',
+                    'email': 'boba@realpython.com'
+                }),
+                content_type='application/json'
+            )
+            data = json.loads(response.data.decode())
+            self.assertEqual(response.status_code, 400)
+            self.assertIn('Invalid payload.', data['message'])
+            self.assertIn('fail', data['status'])
+
+
 
 
 
