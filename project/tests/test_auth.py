@@ -79,7 +79,8 @@ class TestAuthBlueprint(BaseTestCase):
                 data=json.dumps({
                     'email': 'test@test.com',
                     'password': 'test'
-                })
+                }),
+                content_type='application/json'
             )
             data = json.loads(response.data.decode())
             self.assertEqual(response.status_code, 400)
@@ -93,7 +94,8 @@ class TestAuthBlueprint(BaseTestCase):
                 data=json.dumps({
                     'username': 'justatest',
                     'password': 'test'
-                })
+                }),
+                content_type='application/json'
             )
             data = json.loads(response.data.decode())
             self.assertEqual(response.status_code, 400)
@@ -107,14 +109,47 @@ class TestAuthBlueprint(BaseTestCase):
                 data=json.dumps({
                     'username': 'justatest',
                     'email': 'test@test.com'
-                })
+                }),
+                content_type='application/json'
             )
             data = json.loads(response.data.decode())
             self.assertEqual(response.status_code, 400)
             self.assertIn('Invalid payload.', data['message'])
             self.assertIn('error', data['status'])
 
+    def test_registered_user_login(self):
+        with self.client:
+            user = add_user('justatest', 'test@test.com', 'test')
+            response = self.client.post(
+                '/auth/login',
+                data=json.dumps({
+                    'email': 'test@test.com',
+                    'password': 'test'
+                }),
+                content_type='application/json'
+            )
+            data = json.loads(response.data.decode())
+            self.assertEqual(response.status_code, 200)
+            self.assertTrue(data['status'] == 'success')
+            self.assertTrue(data['message'] == 'Successfully logged in.')
+            self.assertTrue(data['auth_token'])
+            self.assertTrue(response.content_type == 'application/json')
 
+    def test_not_registered_user_login(self):
+        with self.client:
+            response = self.client.post(
+                '/auth/login',
+                data=json.dumps({
+                    'email': 'test@test.com',
+                    'password': 'test'
+                }),
+                content_type='application/json'
+            )
+            data = json.loads(response.data.decode())
+            self.assertEqual(response.status_code, 404)
+            self.assertTrue(data['status'] == 'error')
+            self.assertTrue(data['message'] == 'User does not exist.')
+            self.assertTrue(response.content_type == 'application/json')
 
 
 
