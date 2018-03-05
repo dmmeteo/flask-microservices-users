@@ -94,7 +94,7 @@ def login_user():
 
 
 @auth_blueprint.route('/auth/logout', methods=['GET'])
-def logot_user():
+def logout_user():
     # get auth token
     auth_header = request.headers.get('Authorization')
     if auth_header:
@@ -118,6 +118,39 @@ def logot_user():
             'message': 'Provide a valid auth token.'
         }
         return jsonify(response_object), 403
+
+
+@auth_blueprint.route('/auth/status', methods=['GET'])
+def get_user_status():
+    # get auth token
+    auth_header = request.headers.get('Authorization')
+    if auth_header:
+        auth_token = auth_header.split(' ')[1]
+        resp = User.decode_auth_token(auth_token)
+        if isinstance(resp, str):
+            user = User.query.filter_by(id=resp).first()
+            response_object = {
+                'status': 'success',
+                'data': {
+                    'id': user.id,
+                    'username': user.username,
+                    'email': user.email,
+                    'active': user.active,
+                    'created_at': user.created_at
+                }
+            }
+            return jsonify(response_object), 200
+        response_object = {
+            'status': 'error',
+            'message': resp
+        }
+        return jsonify(response_object), 401
+    else:
+        response_object = {
+            'status': 'error',
+            'message': 'Provide a valid auth token.'
+        }
+        return jsonify(response_object), 401
 
 
 
