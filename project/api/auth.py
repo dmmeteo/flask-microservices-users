@@ -127,7 +127,7 @@ def get_user_status():
     if auth_header:
         auth_token = auth_header.split(' ')[1]
         resp = User.decode_auth_token(auth_token)
-        if isinstance(resp, str):
+        if not isinstance(resp, str):
             user = User.query.filter_by(id=resp).first()
             response_object = {
                 'status': 'success',
