@@ -117,6 +117,8 @@ def logot_user():
             'status': 'error',
             'message': 'Provide a valid auth token.'
         }
+        return jsonify(response_object), 403
+
 
 
 
