@@ -21,6 +21,10 @@ class TestUserServise(BaseTestCase):
     def test_add_user(self):
         """Ensure a new user can be added to the database"""
         add_user('test', 'test@test.com', 'test')
+        # update user
+        user = User.query.filter_by(email='test@test.com').first()
+        user.admin = True
+        db.session.commit()
         with self.client:
             resp_login = self.client.post(
                 '/auth/login',
@@ -50,6 +54,10 @@ class TestUserServise(BaseTestCase):
     def test_add_user_invalid_json(self):
         """Ensure error is thrown if the JSON object is empty."""
         add_user('test', 'test@test.com', 'test')
+        # update user
+        user = User.query.filter_by(email='test@test.com').first()
+        user.admin = True
+        db.session.commit()
         with self.client:
             resp_login = self.client.post(
                 '/auth/login',
@@ -75,6 +83,10 @@ class TestUserServise(BaseTestCase):
     def test_add_user_invalid_json_keys(self):
         """Ensure error is thrown if the JSON object does not have a username key"""
         add_user('test', 'test@test.com', 'test')
+        # update user
+        user = User.query.filter_by(email='test@test.com').first()
+        user.admin = True
+        db.session.commit()
         with self.client:
             resp_login = self.client.post(
                 '/auth/login',
@@ -102,6 +114,10 @@ class TestUserServise(BaseTestCase):
     def test_add_user_duplicate_email(self):
         """Ensure error is thrown if the email already exists"""
         add_user('test', 'test@test.com', 'test')
+        # update user
+        user = User.query.filter_by(email='test@test.com').first()
+        user.admin = True
+        db.session.commit()
         with self.client:
             resp_login = self.client.post(
                 '/auth/login',
@@ -192,6 +208,10 @@ class TestUserServise(BaseTestCase):
     def test_add_user_invalid_json_keys_no_password(self):
         """Ensure error is thrown if the JSON object does not have a password key"""
         add_user('test', 'test@test.com', 'test')
+        # update user
+        user = User.query.filter_by(email='test@test.com').first()
+        user.admin = True
+        db.session.commit()
         with self.client:
             resp_login = self.client.post(
                 '/auth/login',
@@ -249,8 +269,34 @@ class TestUserServise(BaseTestCase):
             self.assertTrue(data['message'] == 'Something went wrong. Please contact us.')
             self.assertEqual(response.status_code, 401)
 
-
-
+    def test_add_user_not_admin(self):
+        add_user('test', 'test@test.com', 'test')
+        with self.client:
+            # user login
+            resp_login = self.client.post(
+                '/auth/login',
+                data=json.dumps({
+                    'email': 'test@test.com',
+                    'password': 'test'
+                }),
+                content_type='application/json'
+            )
+            response = self.client.post(
+                '/users',
+                data=json.dumps({
+                    'username': 'boba',
+                    'email': 'boba@realpython.com',
+                    'password': 'test'
+                }),
+                content_type='application/json',
+                headers={
+                    'Authorization': 'Bearer ' + json.loads(resp_login.data.decode())['auth_token']
+                }
+            )
+            data = json.loads(response.data.decode())
+            self.assertTrue(data['status'] == 'error')
+            self.assertTrue(data['message'] == 'You do not have permission to do that.')
+            self.assertEqual(response.status_code, 401)
 
 
 
