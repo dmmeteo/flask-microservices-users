@@ -39,8 +39,7 @@ def register_user():
             return jsonify(response_object), 201
         else:
             response_object = {
-                "status": "error",
-                "message": "Sorry. That user already exists.",
+                "status": "error", "message": "Sorry. That user already exists."
             }
             return jsonify(response_object), 400
     except (exc.IntegrityError, ValueError) as e:

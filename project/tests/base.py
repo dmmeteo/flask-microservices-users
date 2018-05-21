@@ -7,8 +7,9 @@ app = create_app()
 
 
 class BaseTestCase(TestCase):
+
     def create_app(self):
-        app.config.from_object('project.config.TestingConfig')
+        app.config.from_object("project.config.TestingConfig")
         return app
 
     def setUp(self):
@@ -18,4 +19,3 @@ class BaseTestCase(TestCase):
     def tearDown(self):
         db.session.remove()
         db.drop_all()
-
