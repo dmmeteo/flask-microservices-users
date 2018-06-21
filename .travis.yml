@@ -10,6 +10,7 @@ install:
   - pip install -r requirements.txt
 
 before_script:
+  - export FLASK_DEBUG=1
   - export APP_SETTINGS=project.config.TestingConfig
   - export DATABASE_URL=postgresql://postgres:@localhost/users_dev
   - export DATABASE_TEST_URL=postgresql://postgres:@localhost/users_test
